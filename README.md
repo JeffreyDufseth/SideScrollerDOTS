@@ -52,13 +52,13 @@ public struct VelocityCurveBuffer : IBufferElementData
 # Systems
 
 ```csharp
-public struct VelocityCurveBuffer : IBufferElementData
-{
-    public Entity VelocityCurveEntity;
-}
+public class VelocityCurveSystem : JobComponentSystem
 ```
 The VelocityCurveSystem runs before Unity Physics. It computes the final velocity for each VelocityCurve.
 
+```csharp
+public class ExportVelocityCurveSystem : JobComponentSystem
+```
 The ExportVelocityCurveSystem then applies these values to each entity with a PhysicsVelocity component (from Unity Physics) and a VelocityCurveBuffer. All referenced VelocityCurve values are added up and applied to the PhysicsVelocity component. It then clears the VelocityCurveBuffer. Due to this, the system is stateless.
 
 
