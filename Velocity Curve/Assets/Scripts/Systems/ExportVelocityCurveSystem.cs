@@ -14,7 +14,7 @@ namespace JeffreyDufseth.VelocityCurve
         [BurstCompile]
         struct ExportVelocityCurveSystemJob : IJobForEachWithEntity_EBC<VelocityCurveBuffer, PhysicsVelocity>
         {
-            [DeallocateOnJobCompletion] [ReadOnly] public ComponentDataFromEntity<VelocityCurve> VelocityCurveGroup;
+            [ReadOnly] public ComponentDataFromEntity<VelocityCurve> VelocityCurveGroup;
 
             public void Execute(Entity entity, int index, DynamicBuffer<VelocityCurveBuffer> velocityCurveBuffer, ref PhysicsVelocity physicsVelocity)
             {
