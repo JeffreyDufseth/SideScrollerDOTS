@@ -1,5 +1,5 @@
 # VelocityCurve
-This is a Unity package for DOTS. Allows for manual control of velocity within Unity Physics (DOTS).
+This is a package for Unity DOTS. Allows for manual control of velocity within Unity Physics (DOTS).
 
 # Design Goals
 
