@@ -1,0 +1,23 @@
+{
+  "displayName": "Velocity Curve",
+  "category": "JeffreyDufseth",
+  "description": "Jeffrey Dufseth's velocity curve package for DOTS.",
+  "dependencies": {
+    "com.unity.burst": "1.1.2",
+    "com.unity.entities": "0.1.1-preview",
+    "com.unity.physics": "0.2.4-preview"
+  },
+  "keywords": [
+    "jeffreydufseth",
+    "velocitycurve"
+  ],
+  "name": "com.jeffreydufseth.velocitycurve",
+  "unity": "2019.1",
+  "unityRelease": "10f1",
+  "version": "0.1-preview",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:JeffreyDufseth/velocity-curve.git",
+    "revision": ""
+  }
+}
