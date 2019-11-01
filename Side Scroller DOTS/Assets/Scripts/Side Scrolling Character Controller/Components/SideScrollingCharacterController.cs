@@ -7,6 +7,11 @@ namespace JeffreyDufseth.SideScroller
         public float FallingAbsoluteAcceleration;
         public float TerminalVelocity;
 
+        public float JumpAbsoluteVelocity;
+        public float JumpAbsoluteDeceleration;
+
+        public bool IsJumping;
+        public bool IsJumpHeld;
         public bool IsFalling;
     }
 }

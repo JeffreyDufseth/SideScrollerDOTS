@@ -30,6 +30,9 @@ namespace JeffreyDufseth.VelocityCurves.Systems
                 }
 
                 physicsVelocity.Linear = newVelocity;
+
+                //Clear the buffer
+                velocityCurveBuffer.Clear();
             }
         }
 

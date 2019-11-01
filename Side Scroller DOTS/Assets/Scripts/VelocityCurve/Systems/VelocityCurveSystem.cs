@@ -82,11 +82,11 @@ namespace JeffreyDufseth.VelocityCurves.Systems
                 //Apply limits
                 if (velocityCurveAxis.IsPositive)
                 {
-                    newVelocity = math.max(newVelocity, velocityCurveAxis.MaximumAbsoluteVelocity * direction);
+                    newVelocity = math.min(newVelocity, velocityCurveAxis.MaximumAbsoluteVelocity * direction);
                 }
                 else
                 {
-                    newVelocity = math.min(newVelocity, velocityCurveAxis.MaximumAbsoluteVelocity * direction);
+                    newVelocity = math.max(newVelocity, velocityCurveAxis.MaximumAbsoluteVelocity * direction);
                 }
 
                 velocityCurveAxis.CurrentVelocity = newVelocity;

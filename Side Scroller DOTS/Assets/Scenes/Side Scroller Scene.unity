@@ -689,7 +689,7 @@ MonoBehaviour:
       m_Value: 0101010101010101010101010101010101010101010101010101010101010101
     m_RaisesCollisionEvents:
       m_Override: 0
-      m_Value: 0
+      m_Value: 1
     m_CustomTags:
       m_Override: 0
       m_Value: 0000000000000000
@@ -734,6 +734,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe0df3874b51c3e43b1733591f34a0fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FallingAbsoluteAcceleration: 85
+  TerminalVelocity: 15
+  JumpAbsoluteDeceleration: 42
+  JumpAbsoluteVelocity: 22
 --- !u!114 &1121404090
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,16 +9,22 @@ using JeffreyDufseth.VelocityCurves.Systems;
 using Unity.Burst;
 using Unity.Jobs;
 using JeffreyDufseth.Solids;
+using UnityEngine;
+using JeffreyDufseth.Solids.Systems;
 
 namespace JeffreyDufseth.SideScroller.Systems
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateBefore(typeof(ResetSolidAgentsSystem))]
     [UpdateBefore(typeof(VelocityCurveSystem))]
     public class SideScrollingCharacterControllerSystem : JobComponentSystem
     {
         [BurstCompile]
         struct SideScrollingCharacterControllerSystemJob : IJobForEachWithEntity_EBCCC<VelocityCurveBuffer, VelocityCurve, SideScrollingCharacterController, SolidAgent>
         {
+            public bool IsJumpPressedThisFrame;
+            public bool IsJumpHeld;
+
             public void Execute(Entity entity, int index,
                                 DynamicBuffer<VelocityCurveBuffer> velocityCurveBuffer,
                                 ref VelocityCurve velocityCurve,
@@ -31,18 +37,56 @@ namespace JeffreyDufseth.SideScroller.Systems
                 //Check if we're grounded
                 if (solidAgent.IsGroundCollided)
                 {
-                    //TODO
-                    velocityCurve.Y = VelocityCurveAxis.Zero;
+                    //We're grounded.
+                    //Reset jumping and falling flags
+                    sideScrollingCharacterController.IsJumping = false;
+                    sideScrollingCharacterController.IsFalling = false;
+                    sideScrollingCharacterController.IsJumpHeld = false;
+
+                    //Check if we want to jump
+                    if (IsJumpPressedThisFrame)
+                    {
+                        sideScrollingCharacterController.IsJumping = true;
+                        sideScrollingCharacterController.IsJumpHeld = true;
+
+                        //TODO determine jump velocity based on horizontal velocity
+                        //This can be done with curves or cutoff points
+
+                        velocityCurve.Y = VelocityCurveAxis.Quadratic(  sideScrollingCharacterController.JumpAbsoluteVelocity,
+                                                                        false,
+                                                                        sideScrollingCharacterController.JumpAbsoluteDeceleration,
+                                                                        sideScrollingCharacterController.TerminalVelocity);
+                    }
+                    else
+                    {
+                        velocityCurve.Y = VelocityCurveAxis.Zero;
+                    }
                 }
                 else
                 {
-                    //Start Falling
-                    sideScrollingCharacterController.IsFalling = true;
+                    //Differentiate between jumping and falling
+                    if (!IsJumpPressedThisFrame)
+                    {
+                        sideScrollingCharacterController.IsJumpHeld = false;
+                    }
 
-                    velocityCurve.Y = VelocityCurveAxis.Quadratic(  velocityCurve.Y.CurrentVelocity,
-                                                                    false,
-                                                                    sideScrollingCharacterController.FallingAbsoluteAcceleration,
-                                                                    sideScrollingCharacterController.TerminalVelocity);
+                    //Did the player let go of jump?
+                    if (sideScrollingCharacterController.IsJumping && !sideScrollingCharacterController.IsJumpHeld)
+                    {
+                        sideScrollingCharacterController.IsJumping = false;
+                    }
+
+                    //Check if we should start falling
+                    if (!sideScrollingCharacterController.IsJumping && !sideScrollingCharacterController.IsFalling)
+                    {
+                        //Start Falling
+                        sideScrollingCharacterController.IsFalling = true;
+
+                        velocityCurve.Y = VelocityCurveAxis.Quadratic(velocityCurve.Y.CurrentVelocity,
+                                                                        false,
+                                                                        sideScrollingCharacterController.FallingAbsoluteAcceleration,
+                                                                        sideScrollingCharacterController.TerminalVelocity);
+                    }
                 }
 
                 //Horizontal Movement
@@ -76,6 +120,8 @@ namespace JeffreyDufseth.SideScroller.Systems
         protected override JobHandle OnUpdate(JobHandle inputDependencies)
         {
             var job = new SideScrollingCharacterControllerSystemJob();
+            job.IsJumpPressedThisFrame = Input.GetButtonDown("Jump");
+            job.IsJumpHeld = Input.GetButton("Jump");
 
             return job.Schedule(this, inputDependencies);
         }
