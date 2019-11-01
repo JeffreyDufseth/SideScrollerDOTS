@@ -13,6 +13,11 @@ namespace JeffreyDufseth.SideScroller.Authoring
         public float JumpAbsoluteDeceleration = 42.0f;
         public float JumpAbsoluteVelocity = 22.0f;
 
+        public float WalkingAbsoluteAcceleration = 21.0f;
+        public float WalkingAbsoluteMaximumVelocity = 11.25f;
+        public float WalkingAbsoluteDeceleration = 14.0f;
+        public float SkiddingAbsoluteDeceleration = 35.0f;
+
         public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
             var componentData = new JeffreyDufseth.SideScroller.SideScrollingCharacterController
@@ -21,7 +26,12 @@ namespace JeffreyDufseth.SideScroller.Authoring
                 TerminalVelocity = TerminalVelocity,
 
                 JumpAbsoluteDeceleration = JumpAbsoluteDeceleration,
-                JumpAbsoluteVelocity = JumpAbsoluteVelocity
+                JumpAbsoluteVelocity = JumpAbsoluteVelocity,
+
+                WalkingAbsoluteAcceleration = WalkingAbsoluteAcceleration,
+                WalkingAbsoluteMaximumVelocity = WalkingAbsoluteMaximumVelocity,
+                WalkingAbsoluteDeceleration = WalkingAbsoluteDeceleration,
+                SkiddingAbsoluteDeceleration = SkiddingAbsoluteDeceleration
             };
             dstManager.AddComponentData(entity, componentData);
         }

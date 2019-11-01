@@ -11,6 +11,7 @@ using Unity.Jobs;
 using JeffreyDufseth.Solids;
 using UnityEngine;
 using JeffreyDufseth.Solids.Systems;
+using Unity.Mathematics;
 
 namespace JeffreyDufseth.SideScroller.Systems
 {
@@ -24,6 +25,7 @@ namespace JeffreyDufseth.SideScroller.Systems
         {
             public bool IsJumpPressedThisFrame;
             public bool IsJumpHeld;
+            public float2 MovementInput;
 
             public void Execute(Entity entity, int index,
                                 DynamicBuffer<VelocityCurveBuffer> velocityCurveBuffer,
@@ -34,6 +36,27 @@ namespace JeffreyDufseth.SideScroller.Systems
                 //Z axis is always 0
                 velocityCurve.Z = VelocityCurveAxis.Zero;
 
+                //Vertical Movement
+                ComputeVerticalMovement(ref velocityCurve,
+                                        ref sideScrollingCharacterController,
+                                        ref solidAgent);
+
+                //Horizontal Movement
+                ComputeHorizontalMovement(  ref velocityCurve,
+                                            ref sideScrollingCharacterController,
+                                            ref solidAgent);
+
+                //Add this velocity curve to the character's velocity curve buffer
+                velocityCurveBuffer.Add(new VelocityCurveBuffer
+                {
+                    VelocityCurveEntity = entity
+                });
+            }
+
+            private void ComputeVerticalMovement(ref VelocityCurve velocityCurve,
+                                                 ref SideScrollingCharacterController sideScrollingCharacterController,
+                                                 [ReadOnly] ref SolidAgent solidAgent)
+            {
                 //Check if we're grounded
                 if (solidAgent.IsGroundCollided)
                 {
@@ -52,7 +75,7 @@ namespace JeffreyDufseth.SideScroller.Systems
                         //TODO determine jump velocity based on horizontal velocity
                         //This can be done with curves or cutoff points
 
-                        velocityCurve.Y = VelocityCurveAxis.Quadratic(  sideScrollingCharacterController.JumpAbsoluteVelocity,
+                        velocityCurve.Y = VelocityCurveAxis.Quadratic(sideScrollingCharacterController.JumpAbsoluteVelocity,
                                                                         false,
                                                                         sideScrollingCharacterController.JumpAbsoluteDeceleration,
                                                                         sideScrollingCharacterController.TerminalVelocity);
@@ -64,6 +87,15 @@ namespace JeffreyDufseth.SideScroller.Systems
                 }
                 else
                 {
+                    //Check for hitting your head on the ceiling
+                    if ((velocityCurve.Y.CurrentVelocity > 0.0f)
+                        && (solidAgent.IsCeilingCollided))
+                    {
+                        //Cancel the jump and reduce velocity to zero
+                        velocityCurve.Y.CurrentVelocity = 0.0f;
+                        sideScrollingCharacterController.IsJumpHeld = false;
+                    }
+
                     //Differentiate between jumping and falling
                     if (!IsJumpPressedThisFrame)
                     {
@@ -88,31 +120,67 @@ namespace JeffreyDufseth.SideScroller.Systems
                                                                         sideScrollingCharacterController.TerminalVelocity);
                     }
                 }
+            }
 
-                //Horizontal Movement
-                //TODO
-                velocityCurve.X = VelocityCurveAxis.Zero;
+            private void ComputeHorizontalMovement( ref VelocityCurve velocityCurve,
+                                                    ref SideScrollingCharacterController sideScrollingCharacterController,
+                                                    [ReadOnly] ref SolidAgent solidAgent)
+            {
+                //Check for hitting a wall you're moving towards
+                if (((velocityCurve.X.CurrentVelocity < 0.0f)
+                    && (solidAgent.IsLeftWallCollided))
+                    
+                    ||
 
-                //Vertical Movement
-                //TODO
-
-                //TODO for testing purposes, set the forward curve
-
-                //velocityCurve.X = new VelocityCurveAxis
-                //{
-                //    Acceleration = 5.0f,
-                //    CurrentVelocity = velocityCurve.X.CurrentVelocity,
-                //    Curve = VelocityCurveTypes.Quadratic,
-                //    DelayTimeRemaining = 0.0f,
-                //    MaximumVelocity = 50.0f,
-                //    MinimumVelocity = 0.0f
-                //};
-
-                //Add this velocity curve to the character's velocity curve buffer
-                velocityCurveBuffer.Add(new VelocityCurveBuffer
+                    ((velocityCurve.X.CurrentVelocity > 0.0f)
+                    && (solidAgent.IsRightWallCollided)))
                 {
-                    VelocityCurveEntity = entity
-                });
+                    //We hit a wall.
+                    //Reduce our current X velocity to zero
+                    velocityCurve.X.CurrentVelocity = 0.0f;
+                }
+
+                //Move based on the movement input
+                if (MovementInput.x == 0.0f)
+                {
+                    //The player isn't holding any direction.
+                    //In the air, do nothing.
+                    //On the ground, skid to a halt
+                    if (solidAgent.IsGroundCollided)
+                    {
+                        velocityCurve.X = VelocityCurveAxis.Quadratic(velocityCurve.X.CurrentVelocity,
+                                                                        velocityCurve.X.CurrentVelocity > 0.0f,
+                                                                        sideScrollingCharacterController.WalkingAbsoluteDeceleration,
+                                                                        0.0f);
+                    }
+                }
+                else
+                {
+                    //Moving left and right
+                    //Check if we're moving with the momentum or against it
+                    if (((MovementInput.x > 0.0f)
+                        && (velocityCurve.X.CurrentVelocity < 0.0f))
+                        
+                        ||
+
+                        ((MovementInput.x < 0.0f)
+                        && (velocityCurve.X.CurrentVelocity > 0.0f)))
+                    {
+                        //The player is skidding back towards zero velocity
+                        velocityCurve.X = VelocityCurveAxis.Quadratic(  velocityCurve.X.CurrentVelocity,
+                                                                        MovementInput.x > 0.0f,
+                                                                        sideScrollingCharacterController.SkiddingAbsoluteDeceleration,
+                                                                        0.0f);
+                    }
+                    else
+                    {
+                        //The player is accelerating towards maximum velocity
+                        velocityCurve.X = VelocityCurveAxis.Quadratic(  velocityCurve.X.CurrentVelocity,
+                                                                        MovementInput.x > 0.0f,
+                                                                        sideScrollingCharacterController.WalkingAbsoluteAcceleration,
+                                                                        sideScrollingCharacterController.WalkingAbsoluteMaximumVelocity);
+                    }
+                }
             }
         }
 
@@ -122,6 +190,11 @@ namespace JeffreyDufseth.SideScroller.Systems
             var job = new SideScrollingCharacterControllerSystemJob();
             job.IsJumpPressedThisFrame = Input.GetButtonDown("Jump");
             job.IsJumpHeld = Input.GetButton("Jump");
+            job.MovementInput = new float2
+            {
+                x = Input.GetAxisRaw("Horizontal"),
+                y = Input.GetAxisRaw("Vertical")
+            };
 
             return job.Schedule(this, inputDependencies);
         }
