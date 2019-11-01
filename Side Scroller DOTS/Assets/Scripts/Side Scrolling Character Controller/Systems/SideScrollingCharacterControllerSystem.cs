@@ -22,7 +22,7 @@ namespace JeffreyDufseth.SideScroller.Systems
             public void Execute(Entity entity, int index,
                                 DynamicBuffer<VelocityCurveBuffer> velocityCurveBuffer,
                                 ref VelocityCurve velocityCurve,
-                                [ReadOnly] ref SideScrollingCharacterController sideScrollingCharacterController,
+                                ref SideScrollingCharacterController sideScrollingCharacterController,
                                 [ReadOnly] ref SolidAgent solidAgent)
             {
                 //Z axis is always 0
@@ -32,30 +32,37 @@ namespace JeffreyDufseth.SideScroller.Systems
                 if (solidAgent.IsGroundCollided)
                 {
                     //TODO
+                    velocityCurve.Y = VelocityCurveAxis.Zero;
                 }
                 else
                 {
-                    //TODO
+                    //Start Falling
+                    sideScrollingCharacterController.IsFalling = true;
+
+                    velocityCurve.Y = VelocityCurveAxis.Quadratic(  velocityCurve.Y.CurrentVelocity,
+                                                                    false,
+                                                                    sideScrollingCharacterController.FallingAbsoluteAcceleration,
+                                                                    sideScrollingCharacterController.TerminalVelocity);
                 }
 
                 //Horizontal Movement
                 //TODO
+                velocityCurve.X = VelocityCurveAxis.Zero;
 
                 //Vertical Movement
                 //TODO
 
                 //TODO for testing purposes, set the forward curve
-                velocityCurve.Y = VelocityCurveAxis.Zero;
 
-                velocityCurve.X = new VelocityCurveAxis
-                {
-                    Acceleration = 5.0f,
-                    CurrentVelocity = velocityCurve.X.CurrentVelocity,
-                    Curve = VelocityCurveTypes.Quadratic,
-                    DelayTimeRemaining = 0.0f,
-                    MaximumVelocity = 50.0f,
-                    MinimumVelocity = 0.0f
-                };
+                //velocityCurve.X = new VelocityCurveAxis
+                //{
+                //    Acceleration = 5.0f,
+                //    CurrentVelocity = velocityCurve.X.CurrentVelocity,
+                //    Curve = VelocityCurveTypes.Quadratic,
+                //    DelayTimeRemaining = 0.0f,
+                //    MaximumVelocity = 50.0f,
+                //    MinimumVelocity = 0.0f
+                //};
 
                 //Add this velocity curve to the character's velocity curve buffer
                 velocityCurveBuffer.Add(new VelocityCurveBuffer

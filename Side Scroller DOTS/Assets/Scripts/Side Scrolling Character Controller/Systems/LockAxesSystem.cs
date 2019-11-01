@@ -21,19 +21,25 @@ namespace JeffreyDufseth.SideScroller.Systems
         {
             public void Execute(ref LockAxes lockAxes, ref PhysicsMass physicsMass, ref Translation translation)
             {
+                //TODO - Inverse Inertia is zero'd out for all axes if at least one should lock
+                //Look to remove this when Unity Physics supports locked axes natively
+
                 if (lockAxes.ShouldLockX)
                 {
                     translation.Value = new float3(lockAxes.LockX, translation.Value.y, translation.Value.z);
+                    physicsMass.InverseInertia = new float3(0.0f, 0.0f, 0.0f);
                 }
 
                 if (lockAxes.ShouldLockY)
                 {
                     translation.Value = new float3(translation.Value.x, lockAxes.LockY, translation.Value.z);
+                    physicsMass.InverseInertia = new float3(0.0f, 0.0f, 0.0f);
                 }
 
                 if (lockAxes.ShouldLockZ)
                 {
                     translation.Value = new float3(translation.Value.x, translation.Value.y, lockAxes.LockZ);
+                    physicsMass.InverseInertia = new float3(0.0f, 0.0f, 0.0f);
                 }
             }
         }

@@ -22,7 +22,7 @@ namespace JeffreyDufseth.Solids.Systems
         }
 
         [BurstCompile]
-        struct CollideWithTerrainJob : ICollisionEventsJob
+        struct SolidAgentCollisionSystemJob : ICollisionEventsJob
         {
             [ReadOnly] public PhysicsWorld World;
             [ReadOnly] public ComponentDataFromEntity<Translation> TranslationGroup;
@@ -211,7 +211,7 @@ namespace JeffreyDufseth.Solids.Systems
 
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
-            JobHandle jobHandle = new CollideWithTerrainJob
+            JobHandle jobHandle = new SolidAgentCollisionSystemJob
             {
                 World = m_BuildPhysicsWorldSystem.PhysicsWorld,
                 TranslationGroup = GetComponentDataFromEntity<Translation>(true),

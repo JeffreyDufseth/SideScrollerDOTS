@@ -25,6 +25,7 @@ namespace JeffreyDufseth.VelocityCurves.Systems
             private VelocityCurveAxis CalculateLinearVelocity(VelocityCurveAxis velocityCurveAxis, float timeStep)
             {
                 float newVelocity = 0.0f;
+                float direction = velocityCurveAxis.IsPositive ? 1.0f : -1.0f;
 
                 switch (velocityCurveAxis.Curve)
                 {
@@ -36,13 +37,13 @@ namespace JeffreyDufseth.VelocityCurves.Systems
 
                     case VelocityCurveTypes.Linear:
                         {
-                            newVelocity = velocityCurveAxis.CurrentVelocity;
+                            newVelocity = velocityCurveAxis.AbsoluteVelocity * direction;
                         }
                         break;
 
                     case VelocityCurveTypes.Quadratic:
                         {
-                            newVelocity = velocityCurveAxis.CurrentVelocity + (velocityCurveAxis.Acceleration * timeStep);
+                            newVelocity = velocityCurveAxis.CurrentVelocity + (velocityCurveAxis.AbsoluteAcceleration * direction * timeStep);
                         }
                         break;
 
@@ -57,7 +58,7 @@ namespace JeffreyDufseth.VelocityCurves.Systems
                                     velocityCurveAxis.DelayTimeRemaining = velocityCurveAxis.DelayTimeRemaining - timeStep;
 
                                     //Stay linear
-                                    newVelocity = velocityCurveAxis.CurrentVelocity;
+                                    newVelocity = velocityCurveAxis.AbsoluteVelocity * direction;
                                 }
                                 else
                                 {
@@ -65,13 +66,13 @@ namespace JeffreyDufseth.VelocityCurves.Systems
                                     float remainingTime = timeStep - velocityCurveAxis.DelayTimeRemaining;
                                     velocityCurveAxis.DelayTimeRemaining = 0.0f;
 
-                                    newVelocity = velocityCurveAxis.CurrentVelocity + (velocityCurveAxis.Acceleration * remainingTime);
+                                    newVelocity = velocityCurveAxis.CurrentVelocity + (velocityCurveAxis.AbsoluteAcceleration * direction * remainingTime);
                                 }
                             }
                             else
                             {
                                 //Full quadradic
-                                newVelocity = velocityCurveAxis.CurrentVelocity + (velocityCurveAxis.Acceleration * timeStep);
+                                newVelocity = velocityCurveAxis.CurrentVelocity + (velocityCurveAxis.AbsoluteAcceleration * direction * timeStep);
                             }
                         }
                         break;
@@ -79,8 +80,14 @@ namespace JeffreyDufseth.VelocityCurves.Systems
 
 
                 //Apply limits
-                newVelocity = math.max(newVelocity, velocityCurveAxis.MinimumVelocity);
-                newVelocity = math.min(newVelocity, velocityCurveAxis.MaximumVelocity);
+                if (velocityCurveAxis.IsPositive)
+                {
+                    newVelocity = math.max(newVelocity, velocityCurveAxis.MaximumAbsoluteVelocity * direction);
+                }
+                else
+                {
+                    newVelocity = math.min(newVelocity, velocityCurveAxis.MaximumAbsoluteVelocity * direction);
+                }
 
                 velocityCurveAxis.CurrentVelocity = newVelocity;
 
