@@ -144,7 +144,7 @@ namespace JeffreyDufseth.SolidManagement.Systems
                     }
                     else if (colliderCastHit.SurfaceNormal.y <= -0.99999f)
                     {
-                        isGroundCollided = true;
+                        isCeilingCollided = true;
                     }
                     else if (colliderCastHit.SurfaceNormal.x >= 0.99999f)
                     {
