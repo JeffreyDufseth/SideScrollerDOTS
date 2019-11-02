@@ -150,7 +150,7 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
                     if (solidAgent.IsGroundCollided)
                     {
                         velocityCurve.X = VelocityCurveAxis.Quadratic(velocityCurve.X.CurrentVelocity,
-                                                                        velocityCurve.X.CurrentVelocity > 0.0f,
+                                                                        velocityCurve.X.CurrentVelocity < 0.0f,
                                                                         sideScrollingCharacterController.WalkingAbsoluteDeceleration,
                                                                         0.0f);
                     }

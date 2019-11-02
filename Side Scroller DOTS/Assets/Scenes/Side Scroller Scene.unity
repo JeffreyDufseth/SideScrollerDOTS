@@ -330,7 +330,7 @@ MonoBehaviour:
     m_Friction:
       m_Override: 0
       m_Value:
-        Value: 0.5
+        Value: 0
         CombineMode: 0
     m_Restitution:
       m_Override: 0
@@ -589,7 +589,7 @@ MonoBehaviour:
     m_Friction:
       m_Override: 0
       m_Value:
-        Value: 0.5
+        Value: 0
         CombineMode: 0
     m_Restitution:
       m_Override: 0
@@ -877,7 +877,7 @@ MonoBehaviour:
     m_Friction:
       m_Override: 0
       m_Value:
-        Value: 0.5
+        Value: 0
         CombineMode: 0
     m_Restitution:
       m_Override: 0
@@ -1111,7 +1111,7 @@ MonoBehaviour:
     m_Friction:
       m_Override: 0
       m_Value:
-        Value: 0.5
+        Value: 0
         CombineMode: 0
     m_Restitution:
       m_Override: 0
@@ -1379,7 +1379,7 @@ MonoBehaviour:
     m_Friction:
       m_Override: 0
       m_Value:
-        Value: 0.5
+        Value: 0
         CombineMode: 0
     m_Restitution:
       m_Override: 0
@@ -1689,7 +1689,7 @@ MonoBehaviour:
     m_Friction:
       m_Override: 0
       m_Value:
-        Value: 0.5
+        Value: 0
         CombineMode: 0
     m_Restitution:
       m_Override: 0
@@ -1802,7 +1802,7 @@ MonoBehaviour:
   PositionA: {fileID: 406908610}
   PositionB: {fileID: 565408322}
   IsMovingTowardsA: 1
-  AbsoluteVelocity: 2
+  AbsoluteVelocity: 1.5
 --- !u!114 &1523498322
 MonoBehaviour:
   m_ObjectHideFlags: 0
