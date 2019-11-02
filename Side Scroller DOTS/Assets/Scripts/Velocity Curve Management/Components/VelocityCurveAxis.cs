@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 
 namespace JeffreyDufseth.VelocityCurveManagement
 {
@@ -23,15 +24,18 @@ namespace JeffreyDufseth.VelocityCurveManagement
 
 
         //Defaults and helper methods
-        public static VelocityCurveAxis Zero = new VelocityCurveAxis
+        public static VelocityCurveAxis Zero()
         {
-            AbsoluteAcceleration = 0,
-            CurrentVelocity = 0,
-            Curve = VelocityCurveTypes.Zero,
-            DelayTimeRemaining = 0,
-            IsPositive = false,
-            MaximumAbsoluteVelocity = 0
-        };
+            return new VelocityCurveAxis
+            {
+                AbsoluteAcceleration = 0,
+                CurrentVelocity = 0,
+                Curve = VelocityCurveTypes.Zero,
+                DelayTimeRemaining = 0,
+                IsPositive = false,
+                MaximumAbsoluteVelocity = 0
+            };
+        }
 
         //Linear
         public static VelocityCurveAxis Linear( bool isPositive,

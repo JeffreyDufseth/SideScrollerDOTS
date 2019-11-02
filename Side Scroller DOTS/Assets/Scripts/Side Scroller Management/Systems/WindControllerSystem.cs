@@ -22,7 +22,7 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
             public void Execute(ref VelocityCurve velocityCurve, ref WindController windController)
             {
                 //The wind never blows on the Z axis
-                velocityCurve.Z = VelocityCurveAxis.Zero;
+                velocityCurve.Z = VelocityCurveAxis.Zero();
 
                 //Turn the wind on and off
                 windController.ElapsedTime += DeltaTime;

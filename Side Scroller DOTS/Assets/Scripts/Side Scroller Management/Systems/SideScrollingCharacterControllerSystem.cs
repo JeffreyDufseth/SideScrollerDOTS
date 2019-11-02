@@ -32,7 +32,7 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
                                 [ReadOnly] ref SolidAgent solidAgent)
             {
                 //Z axis is always 0
-                velocityCurve.Z = VelocityCurveAxis.Zero;
+                velocityCurve.Z = VelocityCurveAxis.Zero();
 
                 //Vertical Movement
                 ComputeVerticalMovement(ref velocityCurve,

@@ -25,7 +25,7 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
                                 ref VelocityCurve velocityCurve, ref MovingPlatformController movingPlatformController, ref Translation translation)
             {
                 //The wind never blows on the Z axis
-                velocityCurve.Z = VelocityCurveAxis.Zero;
+                velocityCurve.Z = VelocityCurveAxis.Zero();
 
                 //Check if we've reached our current destination
                 float3 destination = movingPlatformController.IsMovingTowardsA ? movingPlatformController.PositionA : movingPlatformController.PositionB;

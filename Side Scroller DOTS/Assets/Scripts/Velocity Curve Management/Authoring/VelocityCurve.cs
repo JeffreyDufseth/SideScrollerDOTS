@@ -11,9 +11,9 @@ namespace JeffreyDufseth.VelocityCurveManagement.Authoring
         {
             var componentData = new JeffreyDufseth.VelocityCurveManagement.VelocityCurve
             {
-                X = VelocityCurveAxis.Zero,
-                Y = VelocityCurveAxis.Zero,
-                Z = VelocityCurveAxis.Zero
+                X = VelocityCurveAxis.Zero(),
+                Y = VelocityCurveAxis.Zero(),
+                Z = VelocityCurveAxis.Zero()
             };
             dstManager.AddComponentData(entity, componentData);
         }
