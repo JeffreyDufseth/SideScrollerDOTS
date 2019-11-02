@@ -20,6 +20,7 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
         [BurstCompile]
         struct SideScrollingCharacterControllerSystemJob : IJobForEachWithEntity_EBCCC<VelocityCurveBuffer, VelocityCurve, SideScrollingCharacterController, SolidAgent>
         {
+            public float DeltaTime;
             public bool IsJumpPressedThisFrame;
             public bool IsJumpHeld;
             public float2 MovementInput;
@@ -79,7 +80,10 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
                     }
                     else
                     {
-                        velocityCurve.Y = VelocityCurveAxis.Zero;
+                        //While grounded, continue to push down on the ground an amount
+                        //equal to a single step off acceleration
+                        velocityCurve.Y = VelocityCurveAxis.Linear( false,
+                                                                    sideScrollingCharacterController.FallingAbsoluteAcceleration * DeltaTime);
                     }
                 }
                 else
@@ -185,6 +189,7 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
         protected override JobHandle OnUpdate(JobHandle inputDependencies)
         {
             var job = new SideScrollingCharacterControllerSystemJob();
+            job.DeltaTime = Time.fixedDeltaTime;
             job.IsJumpPressedThisFrame = Input.GetButtonDown("Jump");
             job.IsJumpHeld = Input.GetButton("Jump");
             job.MovementInput = new float2

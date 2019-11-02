@@ -34,20 +34,18 @@ namespace JeffreyDufseth.VelocityCurveManagement
         };
 
         //Linear
-        public static VelocityCurveAxis Linear(float currentVelocity,
-                                                bool isPositive,
-                                                float absoluteVelocity,
-                                                float maximumAbsoluteVelocity)
+        public static VelocityCurveAxis Linear( bool isPositive,
+                                                float absoluteVelocity)
         {
             return new VelocityCurveAxis
             {
                 AbsoluteAcceleration = 0.0f,
                 AbsoluteVelocity = absoluteVelocity,
-                CurrentVelocity = currentVelocity,
+                CurrentVelocity = 0.0f,
                 Curve = VelocityCurveTypes.Linear,
                 DelayTimeRemaining = 0.0f,
                 IsPositive = isPositive,
-                MaximumAbsoluteVelocity = maximumAbsoluteVelocity
+                MaximumAbsoluteVelocity = absoluteVelocity
             };
         }
 
