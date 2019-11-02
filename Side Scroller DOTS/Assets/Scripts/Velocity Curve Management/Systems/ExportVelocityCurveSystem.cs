@@ -22,7 +22,8 @@ namespace JeffreyDufseth.VelocityCurveManagement.Systems
 
                 for(int i = 0; i < velocityCurveBuffer.Length; i++)
                 {
-                    VelocityCurve velocityCurve = VelocityCurveGroup[entity];
+                    VelocityCurveBuffer velocityCurveBufferElement = velocityCurveBuffer[i];
+                    VelocityCurve velocityCurve = VelocityCurveGroup[velocityCurveBufferElement.VelocityCurveEntity];
 
                     newVelocity.x += velocityCurve.X.CurrentVelocity;
                     newVelocity.y += velocityCurve.Y.CurrentVelocity;
