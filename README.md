@@ -4,4 +4,6 @@ This is a side scroller proof of concept for Unity DOTS. It utilizes Unity Physi
 - Side Scrolling Character Controller
 - Force Areas
 - Moving Platforms
-
+- Pass-Through Terrain
+- Push Blocks
+- Respawn Area
