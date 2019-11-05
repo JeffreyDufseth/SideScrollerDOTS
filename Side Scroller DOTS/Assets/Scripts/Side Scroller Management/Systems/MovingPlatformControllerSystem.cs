@@ -24,7 +24,7 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
                                 DynamicBuffer<VelocityCurveBuffer> velocityCurveBuffer,
                                 ref VelocityCurve velocityCurve, ref MovingPlatformController movingPlatformController, ref Translation translation)
             {
-                //The wind never blows on the Z axis
+                //The platform never moves on the Z axis
                 velocityCurve.Z = VelocityCurveAxis.Zero();
 
                 //Check if we've reached our current destination
@@ -51,9 +51,7 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
 
                 float3 directionToMove = math.normalize(distanceAvailableToMove);
 
-                //TODO cleanup, this whole section is confusing!
                 float3 linearVelocity = new float3();
-
                 if (distanceAvailableToMoveSquared < distanceToMoveThisTimeStepSquared)
                 {
                     linearVelocity = distanceAvailableToMove / DeltaTime;

@@ -12,6 +12,8 @@ namespace JeffreyDufseth.SolidManagement.Systems
     [UpdateAfter(typeof(EndFramePhysicsSystem))]
     public unsafe class SolidAgentCollisionSystem : JobComponentSystem
     {
+        private const float SurfaceNormalEdgeThreshold = 0.99999f;
+
         BuildPhysicsWorld m_BuildPhysicsWorldSystem;
         StepPhysicsWorld m_StepPhysicsWorldSystem;
 
@@ -80,9 +82,6 @@ namespace JeffreyDufseth.SolidManagement.Systems
                                             ref RigidBody solidAgentRigidBody,
                                             ref RigidBody solidRigidBody)
             {
-                //TODO this method needs general purpose cleanup and testing
-
-                
                 Translation solidAgentTranslation = TranslationGroup[solidAgentEntity];
                 Rotation solidAgentRotation = RotationGroup[solidAgentEntity];
 
@@ -92,7 +91,7 @@ namespace JeffreyDufseth.SolidManagement.Systems
 
                 //The solid agent is guaranteed to be a solid agent.
                 //We assume anything the solid agent collides with is a solid.
-                //Triggers, for example, will not be triggered here - only real collisions happen here
+                //Triggers, for example, will not be triggered here - only collisions happen here
 
                 BoxCollider* solidBoxCollider = (BoxCollider*)solidRigidBody.Collider;
 
@@ -137,20 +136,19 @@ namespace JeffreyDufseth.SolidManagement.Systems
                     bool isLeftWallCollided = false;
                     bool isRightWallCollided = false;
 
-                    //TODO tune this range
-                    if (colliderCastHit.SurfaceNormal.y >= 0.99999f)
+                    if (colliderCastHit.SurfaceNormal.y >= SurfaceNormalEdgeThreshold)
                     {
                         isGroundCollided = true;
                     }
-                    else if (colliderCastHit.SurfaceNormal.y <= -0.99999f)
+                    else if (colliderCastHit.SurfaceNormal.y <= -SurfaceNormalEdgeThreshold)
                     {
                         isCeilingCollided = true;
                     }
-                    else if (colliderCastHit.SurfaceNormal.x >= 0.99999f)
+                    else if (colliderCastHit.SurfaceNormal.x >= SurfaceNormalEdgeThreshold)
                     {
                         isLeftWallCollided = true;
                     }
-                    else if (colliderCastHit.SurfaceNormal.x <= -0.99999f)
+                    else if (colliderCastHit.SurfaceNormal.x <= -SurfaceNormalEdgeThreshold)
                     {
                         isRightWallCollided = true;
                     }

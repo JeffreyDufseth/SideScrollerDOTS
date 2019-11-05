@@ -70,9 +70,6 @@ namespace JeffreyDufseth.SideScrollerManagement.Systems
                         sideScrollingCharacterController.IsJumping = true;
                         sideScrollingCharacterController.IsJumpHeld = true;
 
-                        //TODO determine jump velocity based on horizontal velocity
-                        //This can be done with curves or cutoff points
-
                         velocityCurve.Y = VelocityCurveAxis.Quadratic(sideScrollingCharacterController.JumpAbsoluteVelocity,
                                                                         false,
                                                                         sideScrollingCharacterController.JumpAbsoluteDeceleration,
