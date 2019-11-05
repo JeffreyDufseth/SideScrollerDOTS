@@ -17,18 +17,19 @@ public struct VelocityCurve : IComponentData
 
 public struct VelocityCurveAxis
 {
-    public VelocityCurves Curve;
+    public VelocityCurveTypes Curve;
     public float CurrentVelocity;
 
-    public float Acceleration;
-    public float MaximumVelocity;
-    public float MinimumVelocity;
+    public bool IsPositive;
+    public float AbsoluteVelocity;
+    public float AbsoluteAcceleration;
+    public float MaximumAbsoluteVelocity;
     public float DelayTimeRemaining;
     etc...
 }
 ```
 
-The VelocityCurve component contains a VelocityCurveAxis for X, Y, and Z. VelocityCurveAxis allows you to specify the type of curve, the starting velocity, the acceleration (if relevant), and more.
+The VelocityCurve component contains a VelocityCurveAxis for X, Y, and Z. VelocityCurveAxis allows you to specify the type of curve, the starting velocity, the acceleration (if relevant), and more. Values are assigned as absolute values, and the IsPositive flag switches the direction those values are applied in.
 
 ```csharp
 public enum VelocityCurves
@@ -38,6 +39,19 @@ public enum VelocityCurves
     Quadratic,
     LinearThenQuadratic
 }
+```
+
+A velocity curve is created using a helper method of VelocityCurveAxis.
+
+
+```csharp
+velocityCurve.Y = VelocityCurveAxis.Linear( false,
+                                            downwardAbsoluteVelocity);
+                                                                    
+velocityCurve.Y = VelocityCurveAxis.Quadratic(false,
+                                              jumpAbsoluteVelocity,
+                                              jumpAbsoluteDeceleration,
+                                              terminalVelocity);
 ```
 
 The VelocityCurveBuffer is how a VelocityCurve is applied to a specific entity. This buffer is cleared and repopulated every frame. This way, we get a clean stateless approach to applying velocity curves to individual entities. This helps us avoid bugs and runaway velocities.
